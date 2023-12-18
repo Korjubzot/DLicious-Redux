@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
+import RecipeForm from "./components/recipeForm/recipeForm";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -25,8 +26,11 @@ function App() {
   }
 
   async function addRecipe() {
-    const newRecipe = { name: "Testing...", cuisine: "American" };
-    const { data, error } = await supabase.from("recipes").insert([newRecipe]);
+    const newRecipe = { name: "Based", cuisine: "Cringe" };
+    const { data, error } = await supabase
+      .from("recipes")
+      .insert([newRecipe])
+      .select();
 
     if (error) {
       console.error("Error adding new recipe:", error);
@@ -59,11 +63,12 @@ function App() {
         <button onClick={addRecipe}>Add Recipe</button>
         <ul>
           {recipes.map((recipe) => (
-            <li key={recipe.name}>
+            <li key={recipe.id}>
               {recipe.name}, {recipe.cuisine}
             </li>
           ))}
         </ul>
+        <RecipeForm />
         <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
       </div>
     );
