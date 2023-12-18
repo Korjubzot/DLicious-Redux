@@ -1,3 +1,4 @@
+import Header from "./components/header/header";
 import "./App.css";
 
 import { useState, useEffect, createContext } from "react";
@@ -27,22 +28,6 @@ function App() {
     setRecipes(data);
   }
 
-  // async function addRecipe() {
-  //   const newRecipe = { name: "Based", cuisine: "Cringe" };
-  //   const { data, error } = await supabase
-  //     .from("recipes")
-  //     .insert([newRecipe])
-  //     .select();
-
-  //   if (error) {
-  //     console.error("Error adding new recipe:", error);
-  //   } else if (data) {
-  //     setRecipes([...recipes, data[0]]);
-  //   } else {
-  //     console.error("No data returned after inserting new recipe");
-  //   }
-  // }
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -63,6 +48,7 @@ function App() {
     return (
       <SupabaseContext.Provider value={supabase}>
         <div className="App">
+          <Header />
           <ul>
             {recipes.map((recipe) => (
               <li key={recipe.id}>

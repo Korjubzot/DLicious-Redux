@@ -22,7 +22,6 @@ function RecipeForm() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     const { data, error } = await supabase
       .from("recipes")
       .insert([recipe])
@@ -39,6 +38,7 @@ function RecipeForm() {
       console.error("No data returned after inserting new recipe");
     }
   };
+
   return (
     <div>
       <h2 className="recipe-title">Create Recipe</h2>
