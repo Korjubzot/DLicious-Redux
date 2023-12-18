@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 
 import "./recipeForm.css";
+import { SupabaseContext } from "../../App";
 
 function RecipeForm() {
+  const supabase = useContext(SupabaseContext);
+
   const [recipe, setRecipe] = useState({
     name: "",
     cuisine: "",
-    cooking_time: 0,
-    servings: 0,
-    ingredients: "",
-    instructions: "",
+    // cooking_time: 0,
+    // servings: 0,
+    // ingredients: "",
+    // instructions: "",
   });
 
   const handleChange = (e) => {
@@ -20,7 +23,21 @@ function RecipeForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(recipe);
+    const { data, error } = await supabase
+      .from("recipes")
+      .insert([recipe])
+      .select();
+
+    if (error) {
+      console.error("Error adding new recipe:", error);
+    } else if (data) {
+      setRecipe({
+        name: "",
+        cuisine: "",
+      });
+    } else {
+      console.error("No data returned after inserting new recipe");
+    }
   };
   return (
     <div>
@@ -46,7 +63,7 @@ function RecipeForm() {
             required
           />
         </div>
-        <div>
+        {/* <div>
           <label>Cooking time (minutes)</label>
           <input
             type="number"
@@ -85,7 +102,7 @@ function RecipeForm() {
             onChange={handleChange}
             required
           />
-        </div>
+        </div> */}
         <button type="submit" className="submit-button">
           Create Recipe
         </button>

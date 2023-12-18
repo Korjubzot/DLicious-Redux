@@ -27,21 +27,21 @@ function App() {
     setRecipes(data);
   }
 
-  async function addRecipe() {
-    const newRecipe = { name: "Based", cuisine: "Cringe" };
-    const { data, error } = await supabase
-      .from("recipes")
-      .insert([newRecipe])
-      .select();
+  // async function addRecipe() {
+  //   const newRecipe = { name: "Based", cuisine: "Cringe" };
+  //   const { data, error } = await supabase
+  //     .from("recipes")
+  //     .insert([newRecipe])
+  //     .select();
 
-    if (error) {
-      console.error("Error adding new recipe:", error);
-    } else if (data) {
-      setRecipes([...recipes, data[0]]);
-    } else {
-      console.error("No data returned after inserting new recipe");
-    }
-  }
+  //   if (error) {
+  //     console.error("Error adding new recipe:", error);
+  //   } else if (data) {
+  //     setRecipes([...recipes, data[0]]);
+  //   } else {
+  //     console.error("No data returned after inserting new recipe");
+  //   }
+  // }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -63,7 +63,6 @@ function App() {
     return (
       <SupabaseContext.Provider value={supabase}>
         <div className="App">
-          <button onClick={addRecipe}>Add Recipe</button>
           <ul>
             {recipes.map((recipe) => (
               <li key={recipe.id}>
