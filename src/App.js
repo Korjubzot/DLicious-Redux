@@ -1,5 +1,6 @@
 import Header from "./components/header/header";
 import "./App.css";
+import { Routes, Route } from "react-router-dom";
 
 import { useState, useEffect, createContext } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -39,8 +40,10 @@ function App() {
       <SupabaseContext.Provider value={supabase}>
         <div className="App">
           <Header />
-          <RecipeList />
-          <RecipeForm />
+          <Routes>
+            <Route element={<RecipeForm />} path="/add-recipe" exact />
+            <Route element={<RecipeList />} path="/recipes" exact />
+          </Routes>
           <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
         </div>
       </SupabaseContext.Provider>
