@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -10,6 +10,8 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.REACT_APP_SUPABASE_API_KEY
 );
+
+export const SupabaseContext = createContext();
 
 function App() {
   const [session, setSession] = useState(null);
@@ -59,18 +61,20 @@ function App() {
     return <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />;
   } else
     return (
-      <div className="App">
-        <button onClick={addRecipe}>Add Recipe</button>
-        <ul>
-          {recipes.map((recipe) => (
-            <li key={recipe.id}>
-              {recipe.name}, {recipe.cuisine}
-            </li>
-          ))}
-        </ul>
-        <RecipeForm />
-        <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
-      </div>
+      <SupabaseContext.Provider value={supabase}>
+        <div className="App">
+          <button onClick={addRecipe}>Add Recipe</button>
+          <ul>
+            {recipes.map((recipe) => (
+              <li key={recipe.id}>
+                {recipe.name}, {recipe.cuisine}
+              </li>
+            ))}
+          </ul>
+          <RecipeForm />
+          <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
+        </div>
+      </SupabaseContext.Provider>
     );
 }
 
