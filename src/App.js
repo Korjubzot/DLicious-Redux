@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import RecipeForm from "./components/recipeForm/recipeForm";
+import RecipeList from "./components/recipesList/recipesList";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -16,17 +17,6 @@ export const SupabaseContext = createContext();
 
 function App() {
   const [session, setSession] = useState(null);
-  const [recipes, setRecipes] = useState([]);
-
-  useEffect(() => {
-    getRecipes();
-  }, []);
-
-  async function getRecipes() {
-    const { data } = await supabase.from("recipes").select();
-    console.log(data);
-    setRecipes(data);
-  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -49,13 +39,7 @@ function App() {
       <SupabaseContext.Provider value={supabase}>
         <div className="App">
           <Header />
-          <ul>
-            {recipes.map((recipe) => (
-              <li key={recipe.id}>
-                {recipe.name}, {recipe.cuisine}
-              </li>
-            ))}
-          </ul>
+          <RecipeList />
           <RecipeForm />
           <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
         </div>
