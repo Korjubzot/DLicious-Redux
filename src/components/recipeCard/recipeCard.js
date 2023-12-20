@@ -1,8 +1,14 @@
 import { useParams } from "react-router-dom";
-
 import { SupabaseContext } from "../../App";
-
 import React, { useEffect, useState, useContext } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  List,
+  ListItem,
+  Button,
+} from "@mui/material";
 
 function RecipeCard() {
   const [recipe, setRecipe] = useState(null);
@@ -28,41 +34,43 @@ function RecipeCard() {
     getRecipe();
   }, [id, supabase]);
 
-  if (!recipe) return <p>404 Recipe Not Fund</p>;
+  if (!recipe) return <p>404 Recipe Not Found</p>;
 
   const { name, cuisine, cooking_time, servings, ingredients, instructions } =
     recipe;
 
   return (
-    <div className="recipe-detail-container">
-      <h1 className="recipe-title">{name}</h1>
-      <div className="recipe-info">
-        <p>Cuisine: {cuisine}</p>
-        <p>Cooking Time: {cooking_time} minutes</p>
-        <p>Servings: {servings}</p>
-      </div>
-      <div className="recipe-section">
-        <h2 className="section-title">Ingredients:</h2>
-        <ul>
+    <Card className="recipe-detail-container">
+      <CardContent>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {name}
+        </Typography>
+        <Typography variant="body1">Cuisine: {cuisine}</Typography>
+        <Typography variant="body1">
+          Cooking Time: {cooking_time} minutes
+        </Typography>
+        <Typography variant="body1">Servings: {servings}</Typography>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Ingredients:
+        </Typography>
+        <List>
           {ingredients &&
             ingredients.map((ingredient, index) => (
-              <li key={index} className="ingredient">
-                {ingredient}
-              </li>
+              <ListItem key={index}>{ingredient}</ListItem>
             ))}
-        </ul>
-      </div>
-      <div className="recipe-section">
-        <h2 className="section-title">Instructions:</h2>
-        <div className="instruction-list">{instructions}</div>
-      </div>
-      {/* <button onClick={} className="delete-button">
-        Delete Recipe
-      </button>
-      <button onClick={} className="edit-button">
-        Edit Recipe
-      </button> */}
-    </div>
+        </List>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Instructions:
+        </Typography>
+        <Typography variant="body1">{instructions}</Typography>
+        {/* <Button variant="contained" color="secondary" onClick={} className="delete-button">
+          Delete Recipe
+        </Button>
+        <Button variant="contained" color="primary" onClick={} className="edit-button">
+          Edit Recipe
+        </Button> */}
+      </CardContent>
+    </Card>
   );
 }
 

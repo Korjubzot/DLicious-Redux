@@ -1,11 +1,12 @@
-import React, { useContext } from "react";
-import { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import "./recipeForm.css";
 import { SupabaseContext } from "../../App";
 
 function RecipeForm() {
   const supabase = useContext(SupabaseContext);
+  const navigate = useNavigate();
 
   const [recipe, setRecipe] = useState({
     name: "",
@@ -22,6 +23,7 @@ function RecipeForm() {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     const { data, error } = await supabase
       .from("recipes")
       .insert([recipe])
@@ -30,10 +32,12 @@ function RecipeForm() {
     if (error) {
       console.error("Error adding new recipe:", error);
     } else if (data) {
+      console.log(data);
       setRecipe({
         name: "",
         cuisine: "",
       });
+      navigate(`/recipe/${data[0].id}`);
     } else {
       console.error("No data returned after inserting new recipe");
     }

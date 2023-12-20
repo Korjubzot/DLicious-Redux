@@ -9,6 +9,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import RecipeForm from "./components/recipeForm/recipeForm";
 import RecipeList from "./components/recipesList/recipesList";
 import RecipeCard from "./components/recipeCard/recipeCard";
+import Home from "./components/home/home";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -43,10 +44,10 @@ function App() {
           <Header />
           <Routes>
             <Route element={<RecipeForm />} path="/add-recipe" exact />
-            <Route element={<RecipeList />} path="/recipes" exact />
+            <Route element={<RecipeList />} path="/recipes" />
             <Route element={<RecipeCard />} path="/recipe/:id" exact />
+            <Route element={<Home />} path="/home" exact />
           </Routes>
-          <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
         </div>
       </SupabaseContext.Provider>
     );
