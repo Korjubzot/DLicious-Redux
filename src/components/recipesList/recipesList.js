@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
+import { List, ListItem, ListItemText } from "@mui/material";
+import { Link } from "react-router-dom";
 import { SupabaseContext } from "../../App";
 
 function RecipeList() {
@@ -29,14 +31,18 @@ function RecipeList() {
   }
 
   return (
-    <ul>
+    <List>
       {recipes &&
         recipes.map((recipe) => (
-          <li key={recipe.id}>
-            {recipe.name}, {recipe.cuisine}
-          </li>
+          <ListItem
+            key={recipe.id}
+            component={Link}
+            to={`/recipe/${recipe.id}`}
+          >
+            <ListItemText primary={recipe.name} secondary={recipe.cuisine} />
+          </ListItem>
         ))}
-    </ul>
+    </List>
   );
 }
 

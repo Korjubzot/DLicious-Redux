@@ -36,7 +36,16 @@ function App() {
   }, []);
 
   if (!session) {
-    return <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />;
+    return (
+      <Auth
+        supabaseClient={supabase}
+        appearance={{ theme: ThemeSupa }}
+        providers={["google", "facebook", "github"]}
+        redirectTo="http://localhost:3000/home"
+        // todo fix this redirect
+        // it's not working at all - do i need to package it as a route instead?
+      />
+    );
   } else
     return (
       <SupabaseContext.Provider value={supabase}>

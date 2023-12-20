@@ -39,6 +39,23 @@ function RecipeCard() {
   const { name, cuisine, cooking_time, servings, ingredients, instructions } =
     recipe;
 
+  async function handleDelete() {
+    try {
+      const { data, error } = await supabase
+        .from("recipes")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      console.log("Deleting...");
+    } catch (error) {
+      console.error("Error deleting recipe: ", error);
+    }
+  }
+
+  async function handleEdit() {
+    console.log("Editing...");
+  }
+
   return (
     <Card className="recipe-detail-container">
       <CardContent>
@@ -63,12 +80,22 @@ function RecipeCard() {
           Instructions:
         </Typography>
         <Typography variant="body1">{instructions}</Typography>
-        {/* <Button variant="contained" color="secondary" onClick={} className="delete-button">
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleDelete}
+          className="delete-button"
+        >
           Delete Recipe
         </Button>
-        <Button variant="contained" color="primary" onClick={} className="edit-button">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleEdit}
+          className="edit-button"
+        >
           Edit Recipe
-        </Button> */}
+        </Button>
       </CardContent>
     </Card>
   );
