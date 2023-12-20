@@ -26,9 +26,23 @@ function RecipeForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const userId = user ? user.id : null;
+
+    // Ensure that the user is authenticated before attempting to insert a recipe
+    if (!userId) {
+      console.error("User not authenticated.");
+      return;
+    }
+
+    const recipeWithUserId = { ...recipe, user_id: userId };
+
     const { data, error } = await supabase
       .from("recipes")
-      .insert([recipe])
+      .insert([recipeWithUserId])
       .select();
 
     if (error) {
@@ -72,6 +86,7 @@ function RecipeForm() {
         onChange={handleChange}
         required
       />
+      {/* todo fix the text striking through on the below components */}
       <TextField
         label="Cooking time (minutes)"
         type="number"
@@ -79,6 +94,7 @@ function RecipeForm() {
         value={recipe.cooking_time}
         onChange={handleChange}
         required
+        variant="outlined"
       />
       <TextField
         label="Servings"

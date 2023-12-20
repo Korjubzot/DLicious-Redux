@@ -5,16 +5,16 @@ function Home() {
   return (
     <Container maxWidth="sm">
       <Typography variant="h2" align="center" gutterBottom>
-        Welcome to Our App
+        Welcome to DLicious
       </Typography>
       <Card>
         <CardContent>
           <Typography variant="h5" gutterBottom>
-            Hello, User!
+            Hello, handsome!
           </Typography>
           <Typography variant="body1">
-            We're glad to see you here. Explore our recipes and feel free to add
-            your own!
+            We're glad to see you here. Add your recipes under the "Add Recipe"
+            tab
           </Typography>
         </CardContent>
       </Card>
