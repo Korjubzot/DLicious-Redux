@@ -41,10 +41,7 @@ function RecipeCard() {
 
   async function handleDelete() {
     try {
-      const { data, error } = await supabase
-        .from("recipes")
-        .delete()
-        .eq("id", id);
+      const { error } = await supabase.from("recipes").delete().eq("id", id);
       if (error) throw error;
       console.log("Deleting...");
     } catch (error) {
@@ -54,6 +51,7 @@ function RecipeCard() {
 
   async function handleEdit() {
     console.log("Editing...");
+    // todo build this using the recipe form as a template
   }
 
   return (
@@ -72,14 +70,23 @@ function RecipeCard() {
         </Typography>
         <List>
           {ingredients &&
-            ingredients.map((ingredient, index) => (
-              <ListItem key={index}>{ingredient}</ListItem>
-            ))}
+            ingredients
+              .split(`\n`)
+              .map((ingredient, index) => (
+                <ListItem key={index}>{ingredient.trim()}</ListItem>
+              ))}
         </List>
         <Typography variant="h6" component="h2" gutterBottom>
           Instructions:
         </Typography>
-        <Typography variant="body1">{instructions}</Typography>
+        <List>
+          {instructions &&
+            instructions
+              .split("\n")
+              .map((instruction, index) => (
+                <ListItem key={index}>{instruction.trim()}</ListItem>
+              ))}
+        </List>
         <Button
           variant="contained"
           color="secondary"
