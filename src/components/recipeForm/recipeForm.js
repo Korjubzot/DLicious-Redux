@@ -32,7 +32,6 @@ function RecipeForm() {
     } = await supabase.auth.getUser();
     const userId = user ? user.id : null;
 
-    // Ensure that the user is authenticated before attempting to insert a recipe
     if (!userId) {
       console.error("User not authenticated.");
       return;
@@ -48,7 +47,6 @@ function RecipeForm() {
     if (error) {
       console.error("Error adding new recipe:", error);
     } else if (data) {
-      console.log(data);
       setRecipe({
         name: "",
         cuisine: "",

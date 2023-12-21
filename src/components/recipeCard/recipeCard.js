@@ -43,7 +43,6 @@ function RecipeCard() {
     try {
       const { error } = await supabase.from("recipes").delete().eq("id", id);
       if (error) throw error;
-      console.log("Deleting...");
     } catch (error) {
       console.error("Error deleting recipe: ", error);
     }

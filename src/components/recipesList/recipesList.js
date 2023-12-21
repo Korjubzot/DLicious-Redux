@@ -3,6 +3,8 @@ import { List, ListItem, ListItemText } from "@mui/material";
 import { Link } from "react-router-dom";
 import { SupabaseContext } from "../../App";
 
+import "./recipesList.css";
+
 function RecipeList() {
   const [recipes, setRecipes] = useState([]);
   const [error, setError] = useState(null);
@@ -15,10 +17,18 @@ function RecipeList() {
   }, []);
 
   async function getRecipes() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    console.log(user);
+    const userId = user ? user.id : null;
+
     try {
-      const { data, error } = await supabase.from("recipes").select();
+      const { data, error } = await supabase
+        .from("recipes")
+        .select("*")
+        .eq("user_id", userId);
       if (error) throw error;
-      console.log(data);
       setRecipes(data);
     } catch (error) {
       console.error("Error fetching recipes: ", error);
@@ -31,18 +41,20 @@ function RecipeList() {
   }
 
   return (
-    <List>
-      {recipes &&
-        recipes.map((recipe) => (
-          <ListItem
-            key={recipe.id}
-            component={Link}
-            to={`/recipe/${recipe.id}`}
-          >
-            <ListItemText primary={recipe.name} secondary={recipe.cuisine} />
-          </ListItem>
-        ))}
-    </List>
+    <div className="recipe-list-container">
+      <List>
+        {recipes &&
+          recipes.map((recipe) => (
+            <ListItem
+              key={recipe.id}
+              component={Link}
+              to={`/recipe/${recipe.id}`}
+            >
+              <ListItemText primary={recipe.name} secondary={recipe.cuisine} />
+            </ListItem>
+          ))}
+      </List>
+    </div>
   );
 }
 
