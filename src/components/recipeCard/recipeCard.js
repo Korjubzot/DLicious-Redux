@@ -17,11 +17,18 @@ function RecipeCard() {
 
   useEffect(() => {
     async function getRecipe() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      console.log(user);
+      const userId = user ? user.id : null;
+
       try {
         const { data, error } = await supabase
           .from("recipes")
           .select("*")
           .eq("id", id)
+          .eq("user_id", userId)
           .single();
         if (error) throw error;
 
