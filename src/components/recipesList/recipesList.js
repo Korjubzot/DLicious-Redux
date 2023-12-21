@@ -20,7 +20,6 @@ function RecipeList() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    console.log(user);
     const userId = user ? user.id : null;
 
     try {
