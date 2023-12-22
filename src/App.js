@@ -41,7 +41,7 @@ function App() {
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}
         providers={["google", "facebook", "github"]}
-        redirectTo="http://localhost:3000/home"
+        redirectTo="/home"
         // todo fix this redirect
         // it's not working at all - do i need to package it as a route instead?
       />
@@ -55,7 +55,7 @@ function App() {
             <Route element={<RecipeForm />} path="/add-recipe" exact />
             <Route element={<RecipeList />} path="/recipes" />
             <Route element={<RecipeCard />} path="/recipe/:id" exact />
-            <Route element={<Home />} path="/home" exact />
+            <Route element={<Home />} path="/" />
           </Routes>
         </div>
       </SupabaseContext.Provider>
