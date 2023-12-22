@@ -14,7 +14,7 @@ function Header() {
   return (
     <header>
       <nav>
-        <Button color="inherit" onClick={handleNavigation("/home")}>
+        <Button color="inherit" onClick={handleNavigation("/")}>
           <MuiLink>Home</MuiLink>
         </Button>
         <Button color="inherit" onClick={handleNavigation("/recipes")}>
