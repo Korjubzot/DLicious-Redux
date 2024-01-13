@@ -6,6 +6,7 @@ import {
   Button,
   Select,
   MenuItem,
+  TextField,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { SupabaseContext } from "../../App";
@@ -17,6 +18,7 @@ function RecipeList() {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [sort, setSort] = useState("asc");
+  const [search, setSearch] = useState("");
 
   const supabase = useContext(SupabaseContext);
 
@@ -25,7 +27,7 @@ function RecipeList() {
   useEffect(() => {
     getRecipes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, sort]);
+  }, [page, sort, search]);
 
   async function getRecipes() {
     const {
@@ -39,7 +41,8 @@ function RecipeList() {
         .select("*")
         .eq("user_id", userId)
         .range(page * limit, (page + 1) * limit - 1)
-        .order("name", { ascending: sort === "asc" });
+        .order("name", { ascending: sort === "asc" })
+        .ilike("name", `%${search}%`);
       if (error) throw error;
       setRecipes(data);
     } catch (error) {
@@ -58,6 +61,7 @@ function RecipeList() {
 
   return (
     <div className="recipe-list-container">
+      <TextField value={search} onChange={(e) => setSearch(e.target.value)} />
       <Select value={sort} onChange={(e) => setSort(e.target.value)}>
         <MenuItem value="asc">Ascending</MenuItem>
         <MenuItem value="desc">Descending</MenuItem>
