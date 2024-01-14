@@ -59,6 +59,10 @@ function RecipeCard() {
     // todo build this using the recipe form as a template
   }
 
+  async function handleFavorite() {
+    console.log("Favoriting...");
+  }
+
   return (
     <Card className="recipe-detail-container">
       <CardContent>
@@ -107,6 +111,14 @@ function RecipeCard() {
           className="edit-button"
         >
           Edit Recipe
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleFavorite}
+          className="favorite-button"
+        >
+          Favorite Recipe
         </Button>
       </CardContent>
     </Card>

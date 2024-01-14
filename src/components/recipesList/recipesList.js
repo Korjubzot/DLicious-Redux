@@ -61,8 +61,19 @@ function RecipeList() {
 
   return (
     <div className="recipe-list-container">
-      <TextField value={search} onChange={(e) => setSearch(e.target.value)} />
-      <Select value={sort} onChange={(e) => setSort(e.target.value)}>
+      <TextField
+        id="filled-search"
+        label="Search recipes"
+        type="search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        sx={{ margin: "10px", width: "200px " }}
+      />
+      <Select
+        value={sort}
+        onChange={(e) => setSort(e.target.value)}
+        sx={{ margin: "10px", width: "200px" }}
+      >
         <MenuItem value="asc">Ascending</MenuItem>
         <MenuItem value="desc">Descending</MenuItem>
       </Select>
