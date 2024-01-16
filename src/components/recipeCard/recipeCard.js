@@ -61,6 +61,26 @@ function RecipeCard() {
 
   async function handleFavorite() {
     console.log("Favoriting...");
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const userId = user ? user.id : null;
+
+    try {
+      const { data, error } = await supabase
+        .from("favorites")
+        .insert([{ user_id: userId, recipe_id: recipe.id }]);
+      // todo fix this to use the current user and recipe
+
+      if (error) {
+        console.error("Error favoriting recipe: ", error);
+      } else {
+        console.log("Successfully favorited recipe: ", data);
+      }
+    } catch (error) {
+      console.error("Error favoriting recipe: ", error);
+    }
   }
 
   return (
