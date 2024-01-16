@@ -12,6 +12,8 @@ import {
 
 function RecipeCard() {
   const [recipe, setRecipe] = useState(null);
+  const [isFavorited, setIsFavorited] = useState(false);
+
   const { id } = useParams();
   const supabase = useContext(SupabaseContext);
 
@@ -40,6 +42,32 @@ function RecipeCard() {
     getRecipe();
   }, [id, supabase]);
 
+  useEffect(() => {
+    async function fetchFavoriteStatus() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const userId = user ? user.id : null;
+
+      // Add null check for recipe
+      if (recipe) {
+        const { data: existingFavorite, error } = await supabase
+          .from("favorites")
+          .select("*")
+          .eq("user_id", userId)
+          .eq("recipe_id", recipe.id);
+
+        if (error) {
+          console.error("Error fetching favorite status:", error);
+        } else {
+          setIsFavorited(existingFavorite.length > 0);
+        }
+      }
+    }
+
+    fetchFavoriteStatus();
+  }, [recipe, supabase]);
+
   if (!recipe) return <p>404 Recipe Not Found</p>;
 
   const { name, cuisine, cooking_time, servings, ingredients, instructions } =
@@ -60,26 +88,50 @@ function RecipeCard() {
   }
 
   async function handleFavorite() {
-    console.log("Favoriting...");
-
     const {
       data: { user },
     } = await supabase.auth.getUser();
     const userId = user ? user.id : null;
 
     try {
-      const { data, error } = await supabase
+      const { data: existingFavorite, error: fetchError } = await supabase
         .from("favorites")
-        .insert([{ user_id: userId, recipe_id: recipe.id }]);
-      // todo fix this to use the current user and recipe
+        .select("*")
+        .eq("user_id", userId)
+        .eq("recipe_id", recipe.id);
 
-      if (error) {
-        console.error("Error favoriting recipe: ", error);
+      if (fetchError) {
+        console.error("Error fetching favorite status:", fetchError);
+        return;
+      }
+
+      if (existingFavorite.length > 0) {
+        const { error: deleteError } = await supabase
+          .from("favorites")
+          .delete()
+          .eq("user_id", userId)
+          .eq("recipe_id", recipe.id);
+
+        if (deleteError) {
+          console.error("Error unfavoriting recipe:", deleteError);
+        } else {
+          console.log("Successfully unfavorited recipe");
+          setIsFavorited(false);
+        }
       } else {
-        console.log("Successfully favorited recipe: ", data);
+        const { error: insertError } = await supabase
+          .from("favorites")
+          .insert([{ user_id: userId, recipe_id: recipe.id }]);
+
+        if (insertError) {
+          console.error("Error favoriting recipe:", insertError);
+        } else {
+          console.log("Successfully favorited recipe");
+          setIsFavorited(true);
+        }
       }
     } catch (error) {
-      console.error("Error favoriting recipe: ", error);
+      console.error("Error handling favorite:", error);
     }
   }
 
@@ -134,11 +186,11 @@ function RecipeCard() {
         </Button>
         <Button
           variant="contained"
-          color="primary"
+          color={isFavorited ? "secondary" : "primary"}
           onClick={handleFavorite}
           className="favorite-button"
         >
-          Favorite Recipe
+          {isFavorited ? "Unfavorite Recipe" : "Favorite Recipe"}
         </Button>
       </CardContent>
     </Card>
