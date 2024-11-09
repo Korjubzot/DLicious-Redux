@@ -2,11 +2,14 @@ import { useParams } from "react-router-dom";
 import { SupabaseContext } from "../../App";
 import React, { useEffect, useState, useContext } from "react";
 import {
+  Box,
   Card,
   CardContent,
   Typography,
   List,
   ListItem,
+  ListItemText,
+  Divider,
   Button,
 } from "@mui/material";
 
@@ -25,14 +28,12 @@ function RecipeCard() {
       const userId = user ? user.id : null;
 
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("recipes")
           .select("*")
           .eq("id", id)
           .eq("user_id", userId)
           .single();
-        if (error) throw error;
-
         setRecipe(data);
       } catch (error) {
         console.error("Error fetching recipe: ", error);
@@ -49,7 +50,6 @@ function RecipeCard() {
       } = await supabase.auth.getUser();
       const userId = user ? user.id : null;
 
-      // Add null check for recipe
       if (recipe) {
         const { data: existingFavorite, error } = await supabase
           .from("favorites")
@@ -75,8 +75,7 @@ function RecipeCard() {
 
   async function handleDelete() {
     try {
-      const { error } = await supabase.from("recipes").delete().eq("id", id);
-      if (error) throw error;
+      await supabase.from("recipes").delete().eq("id", id);
     } catch (error) {
       console.error("Error deleting recipe: ", error);
     }
@@ -136,64 +135,69 @@ function RecipeCard() {
   }
 
   return (
-    <Card className="recipe-detail-container">
-      <CardContent>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {name}
-        </Typography>
-        <Typography variant="body1">Cuisine: {cuisine}</Typography>
-        <Typography variant="body1">
-          Cooking Time: {cooking_time} minutes
-        </Typography>
-        <Typography variant="body1">Servings: {servings}</Typography>
-        <Typography variant="h6" component="h2" gutterBottom>
-          Ingredients:
-        </Typography>
-        <List>
-          {ingredients &&
-            ingredients
-              .split(`\n`)
-              .map((ingredient, index) => (
-                <ListItem key={index}>{ingredient.trim()}</ListItem>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Card>
+        <CardContent>
+          <Typography variant="h5" component="h1" gutterBottom>
+            {name}
+          </Typography>
+          <Typography variant="body1">Cuisine: {cuisine}</Typography>
+          <Typography variant="body1">
+            Cooking Time: {cooking_time} minutes
+          </Typography>
+          <Typography variant="body1">Servings: {servings}</Typography>
+          <Typography variant="h6" component="h2" gutterBottom>
+            Ingredients:
+          </Typography>
+          <List>
+            {ingredients &&
+              ingredients
+                .split(`\n`)
+                .map((ingredient, index) => (
+                  <ListItem key={index}>{ingredient.trim()}</ListItem>
+                ))}
+          </List>
+          <Typography variant="h6" component="h2" gutterBottom>
+            Instructions:
+          </Typography>
+          <List>
+            {instructions &&
+              instructions.split("\n").map((instruction, index) => (
+                <div key={index}>
+                  <ListItem>
+                    <ListItemText primary={instruction.trim()} />
+                  </ListItem>
+                  <Divider />
+                </div>
               ))}
-        </List>
-        <Typography variant="h6" component="h2" gutterBottom>
-          Instructions:
-        </Typography>
-        <List>
-          {instructions &&
-            instructions
-              .split("\n")
-              .map((instruction, index) => (
-                <ListItem key={index}>{instruction.trim()}</ListItem>
-              ))}
-        </List>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleDelete}
-          className="delete-button"
-        >
-          Delete Recipe
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleEdit}
-          className="edit-button"
-        >
-          Edit Recipe
-        </Button>
-        <Button
-          variant="contained"
-          color={isFavorited ? "secondary" : "primary"}
-          onClick={handleFavorite}
-          className="favorite-button"
-        >
-          {isFavorited ? "Unfavorite Recipe" : "Favorite Recipe"}
-        </Button>
-      </CardContent>
-    </Card>
+          </List>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleDelete}
+            className="delete-button"
+          >
+            Delete Recipe
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleEdit}
+            className="edit-button"
+          >
+            Edit Recipe
+          </Button>
+          <Button
+            variant="contained"
+            color={isFavorited ? "secondary" : "primary"}
+            onClick={handleFavorite}
+            className="favorite-button"
+          >
+            {isFavorited ? "Unfavorite Recipe" : "Favorite Recipe"}
+          </Button>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
 
